@@ -93,6 +93,7 @@ class Player(Element):
         for enemy in enemylist:
             if self.posX + self.sizeF / 2 >= enemy.posX + enemy.sizeF / 2 and self.posY + self.sizeF / 2 >= enemy.posY + enemy.sizeF / 2 and self.posX - self.sizeF / 2 <= enemy.posX - enemy.sizeF / 2 and self.posY - self.sizeF / 2 <= enemy.posY - enemy.sizeF / 2:
                 canvas.delete(canvas.drawnenemy[z])
+                del canvas.drawnenemy[z]
                 enemylist.remove(enemy)
                 self.score -= 1
                 print self.score
