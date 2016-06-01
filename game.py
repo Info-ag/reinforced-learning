@@ -4,14 +4,15 @@ from elements import Player
 from field import Field
 import random
 import math
+import tkMessageBox
 
 from Tkinter import *
 
 widthPixel = 720
 heightPixel = 720
 
-nFoods = 10
-nEnemies = 10
+nFoods = 3
+nEnemies = 0
 foods = []
 enemies = []
 size, x, y = 0, 0, 0
@@ -81,7 +82,9 @@ def update():
     player.checkeatingfood(foods, canvas)
     player.checkeatingenemy(enemies, canvas)
     finished = player.checkeatenallfood(foods)
+    label.set("Score: " + str(player.score))
     if finished:
+        tkMessageBox.showinfo("Game completed", "Game completed with score " + str(player.score))
         root.mainloop()
     player.posX = deltax
     player.posY = deltay
@@ -95,6 +98,8 @@ root.title("1337 H4X0R5")
 root.resizable(width=0, height=0)
 slider = Scale(root, from_=0, to=2, orient=HORIZONTAL, resolution=0.1)
 slider.pack()
+label = StringVar()
+Label(root, textvariable=label).pack()
 canvas = Field(root, widthPixel, heightPixel)
 canvas.pack()
 canvas.drawfoods(foods)
@@ -102,3 +107,5 @@ canvas.drawenemies(enemies)
 canvas.drawplayer(player)
 root.after(0, update)
 root.mainloop()
+
+

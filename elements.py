@@ -85,7 +85,6 @@ class Player(Element):
                 del canvas.drawnfood[z]
                 foodlist.remove(food)
                 self.score += 1
-                print self.score
             z += 1
 
     def checkeatingenemy(self, enemylist, canvas):
@@ -96,12 +95,10 @@ class Player(Element):
                 del canvas.drawnenemy[z]
                 enemylist.remove(enemy)
                 self.score -= 1
-                print self.score
             z += 1
 
     def checkeatenallfood(self, foodlist):
         if len(foodlist) == 0:
-            print "Game completed with score " + str(self.score)
             return True
         else:
             return False
