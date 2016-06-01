@@ -6,6 +6,7 @@ class Field(Canvas):
     width = 0
     drawnfood = []
     drawnenemy = []
+    drawnplayer = 0
 
     def __init__(self, root, width, height):
         self.height = height
@@ -20,7 +21,8 @@ class Field(Canvas):
             y0 = food.posY * self.height - (.5 * size * sizeF * self.height)
             x1 = x0 + size * sizeF * self.width
             y1 = y0 + size * sizeF * self.height
-            self.drawnfood.append(self.create_oval(int(x0 + 0.5), int(y0 + 0.5), int(x1 + 0.5), int(y1 + 0.5), fill=food.color))
+            self.drawnfood.append(
+                self.create_oval(int(x0 + 0.5), int(y0 + 0.5), int(x1 + 0.5), int(y1 + 0.5), fill=food.color))
 
     def drawenemies(self, enemylist):
         for enemy in enemylist:
@@ -30,7 +32,8 @@ class Field(Canvas):
             y0 = enemy.posY * self.height - (.5 * size * sizeF * self.height)
             x1 = x0 + (size * sizeF * self.width)
             y1 = y0 + (size * sizeF * self.height)
-            self.drawnenemy.append(self.create_oval(int(x0 + 0.5), int(y0 + 0.5), int(x1 + 0.5), int(y1 + 0.5), fill=enemy.color))
+            self.drawnenemy.append(
+                self.create_oval(int(x0 + 0.5), int(y0 + 0.5), int(x1 + 0.5), int(y1 + 0.5), fill=enemy.color))
 
     def drawplayer(self, player):
         size = player.size
@@ -39,4 +42,5 @@ class Field(Canvas):
         y0 = player.posY * self.height - (.5 * size * sizeF * self.height)
         x1 = x0 + (size * sizeF * self.width)
         y1 = y0 + (size * sizeF * self.height)
-        self.drawnplayer = self.create_oval(int(x0 + 0.5), int(y0 + 0.5), int(x1 + 0.5), int(y1 + 0.5), fill=player.color)
+        self.drawnplayer = self.create_oval(int(x0 + 0.5), int(y0 + 0.5), int(x1 + 0.5), int(y1 + 0.5),
+                                            fill=player.color)

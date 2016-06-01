@@ -35,24 +35,27 @@ class Player(Element):
     def __init__(self, posX, posY, size):
         Element.__init__(self, posX, posY, size, "blue")
 
-    def checkcollision(self):
+    def checkcollision(self, angle):
         collisions = [0, 0, 0, 0]
-        if not self.posY + self.sizeF / 2 > 0:
-            collisions[0] = 1
-        if not self.posX + self.sizeF / 2 < 1:
-            collisions[1] = 1
+        if not self.posY - self.sizeF / 2 > 0:
+            if 0.5 < angle < 1.5:
+                collisions[0] = 1
+        if not self.posX + self.sizeF / 2 < 1 and angle:
+            if angle < 1:
+                collisions[1] = 1
         if not self.posY + self.sizeF / 2 < 1:
-            collisions[2] = 1
-        if not self.posX + self.sizeF / 2 > 0:
-            collisions[3] = 1
+            if angle < 0.5 or angle > 1.5:
+                collisions[2] = 1
+        if not self.posX - self.sizeF / 2 > 0:
+            if angle > 1:
+                collisions[3] = 1
         return collisions
 
-    def moveplayer(self, angle, field, collisions):
+    def moveplayer(self, angle, collisions):
         deltax = self.posX
         deltay = self.posY
 
         z = 0
-        #print self.posX, self.posY, angle, field.width, field.height
         self.velocity = [math.cos(angle * math.pi), math.sin(angle * math.pi)]
         for i in collisions:
             if i == 1:
@@ -79,8 +82,8 @@ class Player(Element):
         for food in foodlist:
             if self.posX + self.sizeF / 2 >= food.posX + food.sizeF / 2 and self.posY + self.sizeF / 2 >= food.posY + food.sizeF / 2 and self.posX - self.sizeF / 2 <= food.posX - food.sizeF / 2 and self.posY - self.sizeF / 2 <= food.posY - food.sizeF / 2:
                 canvas.delete(canvas.drawnfood[z])
-                food.posX = -1
-                food.posY = -1
+                del canvas.drawnfood[z]
+                foodlist.remove(food)
                 self.score += 1
                 print self.score
             z += 1
@@ -89,9 +92,15 @@ class Player(Element):
         z = 0
         for enemy in enemylist:
             if self.posX + self.sizeF / 2 >= enemy.posX + enemy.sizeF / 2 and self.posY + self.sizeF / 2 >= enemy.posY + enemy.sizeF / 2 and self.posX - self.sizeF / 2 <= enemy.posX - enemy.sizeF / 2 and self.posY - self.sizeF / 2 <= enemy.posY - enemy.sizeF / 2:
-                enemy.posX = -1
-                enemy.posY = -1
                 canvas.delete(canvas.drawnenemy[z])
+                enemylist.remove(enemy)
                 self.score -= 1
                 print self.score
             z += 1
+
+    def checkeatenallfood(self, foodlist):
+        if len(foodlist) == 0:
+            print "Game completed with score " + str(self.score)
+            return True
+        else:
+            return False
