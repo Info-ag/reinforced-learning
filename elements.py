@@ -51,7 +51,11 @@ class Player(Element):
                 collisions[3] = 1
         return collisions
 
+<<<<<<< Updated upstream
     def moveplayer(self, angle, collisions):
+=======
+    def move(self, angle, field, collisions):
+>>>>>>> Stashed changes
         deltax = self.posX
         deltay = self.posY
 
@@ -97,8 +101,14 @@ class Player(Element):
                 self.score -= 1
             z += 1
 
+<<<<<<< Updated upstream
     def checkeatenallfood(self, foodlist):
         if len(foodlist) == 0:
             return True
         else:
             return False
+=======
+    def refectedAngle(self):
+        hypothenuse = math.sqrt(self.posX**2 + self.posY**2)
+        return math.cos(self.posX/hypothenuse)
+>>>>>>> Stashed changes

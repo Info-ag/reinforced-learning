@@ -1,6 +1,5 @@
-from elements import Food
-from elements import Enemy
-from elements import Player
+from elements import Food, Player, Enemy
+from engine import GameEnigine
 from field import Field
 import random
 import math
@@ -11,11 +10,18 @@ from Tkinter import *
 widthPixel = 720
 heightPixel = 720
 
+<<<<<<< Updated upstream
 nFoods = 3
 nEnemies = 0
+=======
+nFoods = 100
+nEnemies = 30
+>>>>>>> Stashed changes
 foods = []
 enemies = []
 size, x, y = 0, 0, 0
+
+
 
 for i in xrange(nFoods):
     while True:
@@ -75,7 +81,9 @@ player = Player(x, y, size / Player.sizeF)
 # angle = 0.2     # Zahlen von 0 bis 2 da Bogenmass als Winkelangabe
 
 
+
 def update():
+<<<<<<< Updated upstream
     angle = slider.get()
     collisions = player.checkcollision(angle)
     deltax, deltay = player.moveplayer(angle, collisions)
@@ -90,11 +98,14 @@ def update():
     player.posY = deltay
     canvas.delete(canvas.drawnplayer)
     canvas.drawplayer(player)
+=======
+    engine.update(angle)
+>>>>>>> Stashed changes
     root.after(10, update)
 
 
 root = Tk()
-root.title("1337 H4X0R5")
+root.title("Game")
 root.resizable(width=0, height=0)
 slider = Scale(root, from_=0, to=2, orient=HORIZONTAL, resolution=0.1)
 slider.pack()
@@ -105,6 +116,7 @@ canvas.pack()
 canvas.drawfoods(foods)
 canvas.drawenemies(enemies)
 canvas.drawplayer(player)
+engine = GameEnigine(player, foods, enemies, canvas)
 root.after(0, update)
 root.mainloop()
 
