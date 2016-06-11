@@ -1,5 +1,4 @@
 from elements import Food, Player, Enemy
-from engine import GameEnigine
 from field import Field
 import random
 import math
@@ -9,23 +8,8 @@ from Tkinter import *
 widthPixel = 720
 heightPixel = 720
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< Updated upstream
-nFoods = 3
-nEnemies = 0
-=======
-nFoods = 100
-nEnemies = 30
->>>>>>> Stashed changes
-=======
 nFoods = 10
 nEnemies = 10
->>>>>>> parent of 92be842... Add files via upload
-=======
-nFoods = 10
-nEnemies = 10
->>>>>>> parent of 92be842... Add files via upload
 foods = []
 enemies = []
 size, x, y = 0, 0, 0
@@ -92,7 +76,6 @@ player = Player(x, y, size / Player.sizeF)
 
 
 def update():
-<<<<<<< Updated upstream
     angle = slider.get()
     collisions = player.checkcollision(angle)
     deltax, deltay = player.moveplayer(angle, collisions)
@@ -105,9 +88,6 @@ def update():
     player.posY = deltay
     canvas.delete(canvas.drawnplayer)
     canvas.drawplayer(player)
-=======
-    engine.update(angle)
->>>>>>> Stashed changes
     root.after(10, update)
 
 
