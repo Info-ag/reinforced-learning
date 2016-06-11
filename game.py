@@ -3,13 +3,13 @@ from engine import GameEnigine
 from field import Field
 import random
 import math
-import tkMessageBox
 
 from Tkinter import *
 
 widthPixel = 720
 heightPixel = 720
 
+<<<<<<< HEAD
 <<<<<<< Updated upstream
 nFoods = 3
 nEnemies = 0
@@ -17,6 +17,10 @@ nEnemies = 0
 nFoods = 100
 nEnemies = 30
 >>>>>>> Stashed changes
+=======
+nFoods = 10
+nEnemies = 10
+>>>>>>> parent of 92be842... Add files via upload
 foods = []
 enemies = []
 size, x, y = 0, 0, 0
@@ -90,9 +94,7 @@ def update():
     player.checkeatingfood(foods, canvas)
     player.checkeatingenemy(enemies, canvas)
     finished = player.checkeatenallfood(foods)
-    label.set("Score: " + str(player.score))
     if finished:
-        tkMessageBox.showinfo("Game completed", "Game completed with score " + str(player.score))
         root.mainloop()
     player.posX = deltax
     player.posY = deltay
@@ -109,8 +111,6 @@ root.title("Game")
 root.resizable(width=0, height=0)
 slider = Scale(root, from_=0, to=2, orient=HORIZONTAL, resolution=0.1)
 slider.pack()
-label = StringVar()
-Label(root, textvariable=label).pack()
 canvas = Field(root, widthPixel, heightPixel)
 canvas.pack()
 canvas.drawfoods(foods)
@@ -119,5 +119,3 @@ canvas.drawplayer(player)
 engine = GameEnigine(player, foods, enemies, canvas)
 root.after(0, update)
 root.mainloop()
-
-

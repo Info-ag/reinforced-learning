@@ -42,4 +42,5 @@ class Field(Canvas):
         y0 = player.posY * self.height - (.5 * size * sizeF * self.height)
         x1 = x0 + (size * sizeF * self.width)
         y1 = y0 + (size * sizeF * self.height)
-        self.drawnplayer = self.create_oval(int(x0 + 0.5), int(y0 + 0.5), int(x1 + 0.5), int(y1 + 0.5), fill=player.color)
+        self.drawnplayer = self.create_oval(int(x0 + 0.5), int(y0 + 0.5), int(x1 + 0.5), int(y1 + 0.5),
+                                            fill=player.color)
