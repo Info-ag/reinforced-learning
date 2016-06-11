@@ -8,10 +8,10 @@ from Tkinter import *
 widthPixel = 720
 heightPixel = 720
 
-nFoods = 10
-nEnemies = 10
-foods = []
-enemies = []
+nFoods, nEnemies = 10, 10
+
+foods, enemies = [], []
+
 size, x, y = 0, 0, 0
 
 
@@ -70,11 +70,6 @@ while True:
 
 player = Player(x, y, size / Player.sizeF)
 
-
-# angle = 0.2     # Zahlen von 0 bis 2 da Bogenmass als Winkelangabe
-
-
-
 def update():
     angle = slider.get()
     collisions = player.checkcollision(angle)
@@ -88,7 +83,7 @@ def update():
     player.posY = deltay
     canvas.delete(canvas.drawnplayer)
     canvas.drawplayer(player)
-    root.after(10, update)
+    root.after(7, update)
 
 
 root = Tk()
@@ -101,6 +96,5 @@ canvas.pack()
 canvas.drawfoods(foods)
 canvas.drawenemies(enemies)
 canvas.drawplayer(player)
-engine = GameEnigine(player, foods, enemies, canvas)
 root.after(0, update)
 root.mainloop()

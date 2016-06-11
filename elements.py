@@ -26,7 +26,9 @@ class Enemy(Element):
 
 
 class Player(Element):
-    velocity = [math.cos(0), math.sin(0)]
+    directionX = 1
+    directionY = 1
+    velocity = [math.cos(0)*directionX, math.sin(0)*directionY]
     speed = math.sqrt(velocity[0] ** 2 + velocity[1] ** 2)
     sizeF = 0.05
     score = 0
@@ -40,27 +42,29 @@ class Player(Element):
         if not self.posY - self.sizeF / 2 > 0:
             if 0.5 < angle < 1.5:
                 collisions[0] = 1
+                self.directionY *= -1
         if not self.posX + self.sizeF / 2 < 1 and angle:
             if angle < 1:
                 collisions[1] = 1
+                self.directionX *= -1
         if not self.posY + self.sizeF / 2 < 1:
             if angle < 0.5 or angle > 1.5:
                 collisions[2] = 1
+                self.directionY *= -1
         if not self.posX - self.sizeF / 2 > 0:
             if angle > 1:
                 collisions[3] = 1
+                self.directionX *= -1
         return collisions
 
-<<<<<<< Updated upstream
     def moveplayer(self, angle, collisions):
-=======
-    def move(self, angle, field, collisions):
->>>>>>> Stashed changes
         deltax = self.posX
         deltay = self.posY
 
+        self.angle = angle
+
         z = 0
-        self.velocity = [math.cos(angle * math.pi), math.sin(angle * math.pi)]
+        self.velocity = [math.cos(angle * math.pi)*self.directionX, math.sin(angle * math.pi)*self.directionY]
         for i in collisions:
             if i == 1:
                 z += 1
@@ -103,15 +107,10 @@ class Player(Element):
                 print self.score
             z += 1
 
-<<<<<<< Updated upstream
     def checkeatenallfood(self, foodlist):
         if len(foodlist) == 0:
             print "Game completed with score " + str(self.score)
             return True
         else:
             return False
-=======
-    def refectedAngle(self):
-        hypothenuse = math.sqrt(self.posX**2 + self.posY**2)
-        return math.cos(self.posX/hypothenuse)
->>>>>>> Stashed changes
+
