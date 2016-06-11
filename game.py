@@ -10,6 +10,7 @@ widthPixel = 720
 heightPixel = 720
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 <<<<<<< Updated upstream
 nFoods = 3
 nEnemies = 0
@@ -17,6 +18,10 @@ nEnemies = 0
 nFoods = 100
 nEnemies = 30
 >>>>>>> Stashed changes
+=======
+nFoods = 10
+nEnemies = 10
+>>>>>>> parent of 92be842... Add files via upload
 =======
 nFoods = 10
 nEnemies = 10
