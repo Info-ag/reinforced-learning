@@ -1,45 +1,52 @@
-from Tkinter import *
+from PIL import Image, ImageDraw
 
 
-class Field(Canvas):
+class Field:
     height = 0
     width = 0
-    drawnfood = []
-    drawnenemy = []
-    drawnplayer = 0
 
-    def __init__(self, root, width, height):
+    fieldImage = None
+
+    def __init__(self,  width, height):
         self.height = height
         self.width = width
-        Canvas.__init__(self, root, width=width, height=height)
+        self.fieldImage = Image.new('RGB', (self.width, self.height), (255, 255, 255))
+
+    def update_image(self, foodlist, enemylist, player):
+        self.fieldImage = Image.new('RGB', (self.width, self.height), (255, 255, 255))
+        self.drawfoods(foodlist)
+        self.drawenemies(enemylist)
+        self.drawplayer(player)
+        return self.fieldImage
 
     def drawfoods(self, foodlist):
         for food in foodlist:
             size = food.size
-            sizeF = food.sizeF
-            x0 = food.posX * self.width - (.5 * size * sizeF * self.width)
-            y0 = food.posY * self.height - (.5 * size * sizeF * self.height)
-            x1 = x0 + size * sizeF * self.width
-            y1 = y0 + size * sizeF * self.height
-            self.drawnfood.append(
-                self.create_oval(int(x0 + 0.5), int(y0 + 0.5), int(x1 + 0.5), int(y1 + 0.5), fill=food.color))
+            x0 = food.posX - (int(0.5 * food.sizeF * size))
+            y0 = food.posY - (int(0.5 * food.sizeF * size))
+            x1 = x0 + (int(0.5 * food.sizeF * size))
+            y1 = y0 + (int(0.5 * food.sizeF * size))
+            draw = ImageDraw.Draw(self.fieldImage)
+            draw.rectangle([x0, y0, x1, y1], fill=food.color)
+            del draw
 
     def drawenemies(self, enemylist):
         for enemy in enemylist:
             size = enemy.size
-            sizeF = enemy.sizeF
-            x0 = enemy.posX * self.width - (.5 * size * sizeF * self.width)
-            y0 = enemy.posY * self.height - (.5 * size * sizeF * self.height)
-            x1 = x0 + (size * sizeF * self.width)
-            y1 = y0 + (size * sizeF * self.height)
-            self.drawnenemy.append(
-                self.create_oval(int(x0 + 0.5), int(y0 + 0.5), int(x1 + 0.5), int(y1 + 0.5), fill=enemy.color))
+            x0 = enemy.posX - (int(0.5 * enemy.sizeF * size))
+            y0 = enemy.posY - (int(0.5 * enemy.sizeF * size))
+            x1 = x0 + (int(0.5 * enemy.sizeF * size))
+            y1 = y0 + (int(0.5 * enemy.sizeF * size))
+            draw = ImageDraw.Draw(self.fieldImage)
+            draw.rectangle([x0, y0, x1, y1], fill=enemy.color)
+            del draw
 
     def drawplayer(self, player):
         size = player.size
-        sizeF = player.sizeF
-        x0 = player.posX * self.width - (.5 * size * sizeF * self.width)
-        y0 = player.posY * self.height - (.5 * size * sizeF * self.height)
-        x1 = x0 + (size * sizeF * self.width)
-        y1 = y0 + (size * sizeF * self.height)
-        self.drawnplayer = self.create_oval(int(x0 + 0.5), int(y0 + 0.5), int(x1 + 0.5), int(y1 + 0.5), fill=player.color)
+        x0 = player.posX - (int(0.5 * player.sizeF * size))
+        y0 = player.posY - (int(0.5 * player.sizeF * size))
+        x1 = x0 + (int(0.5 * player.sizeF * size))
+        y1 = y0 + (int(0.5 * player.sizeF * size))
+        draw = ImageDraw.Draw(self.fieldImage)
+        draw.rectangle([x0, y0, x1, y1], fill=player.color)
+        del draw

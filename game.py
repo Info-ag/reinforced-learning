@@ -1,145 +1,148 @@
 from elements import Food
 from elements import Enemy
 from elements import Player
-from field import Field
 import random
-import math
-import tkMessageBox
+import numpy as np
+import cv2
 
-from Tkinter import *
 
-class game:
-
+class Game:
     nFoods = 10
     nEnemies = 10
     foods = []
     enemies = []
     size, x, y = 0, 0, 0
+    food_reward = 50
+    enemy_penalty = 300
+    idle_penalty = 5
+    steps = 0
 
-    def __init__(self, _root, _slider, _canvas, _label):
-        self.root = _root
-        self.slider = _slider
+    def __init__(self, _canvas, _width, _height):
         self.canvas = _canvas
-        self.label = _label
-        self.btn_reset = Button(root, text="Reset game", command=self.resetgame, state=DISABLED)
-        self.btn_reset.pack()
+
+        self.width = _width
+        self.height = _height
+        self.oldscore = 0
+        self.player = None
 
     def init_objects(self):
-        for i in xrange(self.nFoods):
+        self.steps = 0
+        for enemy in self.enemies:
+            self.enemies.remove(enemy)
+
+        for food in self.foods:
+            self.foods.remove(food)
+
+        for i in range(self.nFoods):
             while True:
                 flag = False
-                size = 1.0 * Food.sizeF
-                self.x = random.uniform(size / 2.0, 1 - size / 2.0)
-                self.y = random.uniform(size / 2.0, 1 - size / 2.0)
+                size = int(self.width * Food.sizeF)
+                x = random.uniform(int(size / 2.0)+1, self.width - int(size / 2.0)+1)
+                y = random.uniform(int(size / 2.0)+1, self.width - int(size / 2.0)+1)
                 for n in self.foods:
-                    sdump = math.sqrt((self.x - n.posX) ** 2 + (self.y - n.posY) ** 2)
-                    if sdump < n.size * Food.sizeF / 2.0 + size / 2.0:
+                    if abs(x - n.posX) < size+1 and abs(y - n.posY) < size+1:
                         flag = True
                 if not flag:
                     break
 
-            self.foods.extend([Food(self.x, self.y, self.size / Food.sizeF)])
+            self.foods.extend([Food(x, y, self.width)])
 
-        for j in xrange(self.nEnemies):
+        for j in range(self.nEnemies):
             while True:
                 flag = False
-                size = 1 * Enemy.sizeF
-                self.x = random.uniform(size / 2.0, 1 - size / 2.0)
-                self.y = random.uniform(size / 2.0, 1 - size / 2.0)
+                size = int(self.width * Enemy.sizeF)
+                x = random.uniform(int(size / 2.0)+1, self.width - int(size / 2.0)+1)
+                y = random.uniform(int(size / 2.0)+1, self.width - int(size / 2.0)+1)
 
                 for n in self.enemies:
-                    sdump = math.sqrt((self.x - n.posX) ** 2 + (self.y - n.posY) ** 2)
-                    if sdump < n.size * Enemy.sizeF / 2.0 + size / 2.0:
+                    if abs(x - n.posX) < size+1 and abs(y - n.posY) < size+1:
                         flag = True
                 for n in self.foods:
-                    sdump = math.sqrt((self.x - n.posX) ** 2 + (self.y - n.posY) ** 2)
-                    if sdump < n.size * Food.sizeF / 2.0 + size / 2.0:
+                    if abs(x - n.posX) < size+1 and abs(y - n.posY) < size+1:
                         flag = True
                 if not flag:
                     break
 
-            self.enemies.extend([Enemy(self.x, self.y, self.size / Enemy.sizeF)])
+            self.enemies.extend([Enemy(x, y, self.width)])
 
         while True:
             flag = False
             # size = random.randint(0, 0.1)
-            size = 1 * Player.sizeF
-            self.x = random.uniform(size / 2.0, 1 - size / 2.0)
-            self.y = random.uniform(size / 2.0, 1 - size / 2.0)
-            for i in self.foods:
-                sdump = math.sqrt((self.x - i.posX) ** 2 + (self.y - i.posY) ** 2)
-                if sdump < i.size * Player.sizeF / 2.0 + size / 2.0:
+            size = int(self.width * Player.sizeF)
+            x = random.uniform(int(size / 2.0)+1, self.width - int(size / 2.0)+1)
+            y = random.uniform(int(size / 2.0)+1, self.width - int(size / 2.0)+1)
+            for n in self.foods:
+                if abs(x - n.posX) < size + 1 and abs(y - n.posY) < size + 1:
                     flag = True
-            for i in self.enemies:
-                sdump = math.sqrt((self.x - i.posX) ** 2 + (self.y - i.posY) ** 2)
-                if sdump < i.size * Player.sizeF / 2.0 + size / 2.0:
+            for n in self.enemies:
+                if abs(x - n.posX) < size + 1 and abs(y - n.posY) < size + 1:
                     flag = True
             if not flag:
                 break
 
-        self.player = Player(self.x, self.y, self.size / Player.sizeF)
+        self.player = Player(x, y, self.width)
 
-    def update(self):
-        angle = self.slider.get()
+    def update(self, action):
+        angle = 0
+        if action == 0:
+            angle = 0
+        if action == 1:
+            angle = 0.25
+        if action == 2:
+            angle = 0.5
+        if action == 3:
+            angle = 0.75
+        if action == 4:
+            angle = 1
+        if action == 5:
+            angle = 1.25
+        if action == 6:
+            angle = 1.5
+        if action == 7:
+            angle = 1.75
+
         collisions = self.player.checkcollision(angle)
         deltax, deltay = self.player.moveplayer(angle, collisions)
-        self.foods = self.player.checkeatingfood(self.foods, self.canvas)
-        self.enemies = self.player.checkeatingenemy(self.enemies, self.canvas)
+
+        self.foods, eaten_food = self.player.checkeatingfood(self.foods)
+        self.enemies, eaten_enemy = self.player.checkeatingenemy(self.enemies)
+
+        reward = 0
+        if eaten_food:
+            reward += self.food_reward
+        elif eaten_enemy:
+            reward -= self.enemy_penalty
+        else:
+            reward -= self.idle_penalty
+
         finished = self.player.checkeatenallfood(self.foods)
-        self.label.set("Score: " + str(self.player.score))
-        if finished:
-            tkMessageBox.showinfo("Game completed", "Game completed with score " + str(self.player.score))
-            self.btn_reset.configure(state=NORMAL)
-            self.root.mainloop()
+        if self.steps >= 10000:
+            finished = True
+
         self.player.posX = deltax
         self.player.posY = deltay
-        self.canvas.delete(self.canvas.drawnplayer)
-        self.canvas.drawplayer(self.player)
-        self.root.after(1, self.update)
 
-    def startgame(self):
-        self.canvas.drawfoods(self.foods)
-        self.canvas.drawenemies(self.enemies)
-        self.canvas.drawplayer(self.player)
-        self.root.after(0, self.update)
-        self.root.mainloop()
+        self.steps += 1
+        image = self.get_image()
+        imagenp = np.array(image, dtype=np.float32)[:, :, :3]
+        cv2.imshow("", np.array(image.resize((720, 720))))
+        cv2.waitKey(1)
 
-    def resetgame(self):
-        self.btn_reset.configure(state=DISABLED)
+        return imagenp, reward, finished
+
+    def get_image(self):
+        return self.canvas.update_image(self.foods, self.enemies, self.player)
+
+    def reset(self):
         self.x, self.y, self.size = 0, 0, 0
-        z = 0
-        for enemie in self.enemies:
-            canvas.delete(canvas.drawnenemy[z])
-            del canvas.drawnenemy[z]
         self.enemies = []
-        z = 0
-        for food in self.foods:
-            canvas.delete(canvas.drawnfood[z])
-            del canvas.drawnfood[z]
         self.foods = []
-        canvas.delete(canvas.drawnplayer)
         self.init_objects()
-        self.startgame()
 
-widthPixel = 720
-heightPixel = 720
+        image = self.get_image()
+        image = np.asarray(image, dtype=np.float32)[:, :, :3]
 
-root = Tk()
-root.configure(bg='white')
-root.title("1337 H4X0R5")
-root.resizable(width=0, height=0)
-slider = Scale(root, from_=0, to=2, orient=HORIZONTAL, resolution=0.01)
-slider.configure(bg='white', highlightthickness=0)
-slider.pack()
-label = StringVar()
-Label(root, textvariable=label, bg='white').pack()
-canvas = Field(root, widthPixel, heightPixel)
-canvas.configure(bg='grey')
-canvas.pack()
+        return image
 
 
-game = game(root, slider, canvas, label)
-
-game.init_objects()
-game.startgame()
 

@@ -5,7 +5,7 @@ class Element(object):
     posX = 0
     posY = 0
     size = 1
-    sizeF = 0.03
+    sizeF = 0.1
     color = "green"
 
     def __init__(self, posX, posY, size, color):
@@ -22,33 +22,37 @@ class Food(Element):
 
 class Enemy(Element):
     def __init__(self, posX, posY, size):
-        Element.__init__(self, posX, posY, size, "red")
+        Element.__init__(self, posX, posY, size, "blue")
 
 
 class Player(Element):
     velocity = [math.cos(0), math.sin(0)]
     speed = math.sqrt(velocity[0] ** 2 + velocity[1] ** 2)
-    sizeF = 0.05
+    sizeF = 0.13
     score = 0
-    speedF = 0.001
+    speedF = 0.2
 
     def __init__(self, posX, posY, size):
-        Element.__init__(self, posX, posY, size, "blue")
+        Element.__init__(self, posX, posY, size, "red")
 
     def checkcollision(self, angle):
         collisions = [0, 0, 0, 0]
-        if not self.posY - self.sizeF / 2 > 0:
+        if not self.posY - (self.size * self.sizeF) / 2 > 0:
             if 0.5 < angle < 1.5:
                 collisions[0] = 1
-        if not self.posX + self.sizeF / 2 < 1 and angle:
+                #print("a")
+        if not self.posX + int((self.size * self.sizeF) / 2) < self.size and angle:
             if angle < 1:
                 collisions[1] = 1
-        if not self.posY + self.sizeF / 2 < 1:
+                #print("b")
+        if not self.posY + (self.size * self.sizeF) / 2 < self.size:
             if angle < 0.5 or angle > 1.5:
                 collisions[2] = 1
-        if not self.posX - self.sizeF / 2 > 0:
+                #print("c")
+        if not self.posX - (self.size * self.sizeF) / 2 > 0:
             if angle > 1:
                 collisions[3] = 1
+                #print("d")
         return collisions
 
     def moveplayer(self, angle, collisions):
@@ -77,27 +81,33 @@ class Player(Element):
 
         return deltax, deltay
 
-    def checkeatingfood(self, foodlist, canvas):
+    def checkeatingfood(self, foodlist):
         z = 0
+        eaten_food = False
         for food in foodlist:
-            if self.posX + self.sizeF / 2 >= food.posX + food.sizeF / 2 and self.posY + self.sizeF / 2 >= food.posY + food.sizeF / 2 and self.posX - self.sizeF / 2 <= food.posX - food.sizeF / 2 and self.posY - self.sizeF / 2 <= food.posY - food.sizeF / 2:
-                canvas.delete(canvas.drawnfood[z])
-                del canvas.drawnfood[z]
+            if self.posX + (self.size * self.sizeF) / 2 >= food.posX + (food.sizeF * food.sizeF) / 2 \
+                    and self.posY + (self.size * self.sizeF) / 2 >= food.posY + (food.sizeF * food.sizeF) / 2 \
+                    and self.posX - (self.size * self.sizeF) / 2 <= food.posX - (food.sizeF * food.sizeF) / 2 \
+                    and self.posY - (self.size * self.sizeF) / 2 <= food.posY - (food.sizeF * food.sizeF) / 2:
                 foodlist.remove(food)
                 self.score += 1
+                eaten_food = True
             z += 1
-        return foodlist
+        return [foodlist, eaten_food]
 
-    def checkeatingenemy(self, enemylist, canvas):
+    def checkeatingenemy(self, enemylist):
         z = 0
+        eaten_enemy = False
         for enemy in enemylist:
-            if self.posX + self.sizeF / 2 >= enemy.posX + enemy.sizeF / 2 and self.posY + self.sizeF / 2 >= enemy.posY + enemy.sizeF / 2 and self.posX - self.sizeF / 2 <= enemy.posX - enemy.sizeF / 2 and self.posY - self.sizeF / 2 <= enemy.posY - enemy.sizeF / 2:
-                canvas.delete(canvas.drawnenemy[z])
-                del canvas.drawnenemy[z]
+            if self.posX + (self.size * self.sizeF) / 2 >= enemy.posX + (enemy.sizeF * enemy.sizeF) / 2 \
+                    and self.posY + (self.size * self.sizeF) / 2 >= enemy.posY + (enemy.sizeF * enemy.sizeF) / 2 \
+                    and self.posX - (self.size * self.sizeF) / 2 <= enemy.posX - (enemy.sizeF * enemy.sizeF) / 2 \
+                    and self.posY - (self.size * self.sizeF) / 2 <= enemy.posY - (enemy.sizeF * enemy.sizeF) / 2:
                 enemylist.remove(enemy)
                 self.score -= 1
+                eaten_enemy = True
             z += 1
-        return enemylist
+        return [enemylist, eaten_enemy]
 
     def checkeatenallfood(self, foodlist):
         if len(foodlist) == 0:
